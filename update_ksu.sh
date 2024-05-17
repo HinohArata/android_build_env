@@ -43,7 +43,7 @@ echo -ne "Do you want to reeapply patch in kernelsu [y/n]: "
 read -r kksu
 if [[ "${kksu}" == "y" ]]; then
     echo "Applying" && echo ""
-    https://raw.githubusercontent.com/HinohArata/android_build_env/main/ksu-reapply-kprobes.patch
+    wget https://raw.githubusercontent.com/HinohArata/android_build_env/main/ksu-reapply-kprobes.patch
     git apply ksu-reapply-kprobes.patch
     rm -rf ksu-reapply-kprobes.patch
     git add .
