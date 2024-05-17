@@ -1,0 +1,40 @@
+commit e4cfbbbc76ebe15f136a9dc4e59d8053b8d59a7f
+Author: skyy hinohara <alfinalifi76@gmail.com>
+Date:   Tue May 14 03:54:10 2024 +0000
+
+    [REAPPLY] kernelsu: we're non GKI and non KPROBES build
+
+diff --git a/drivers/kernelsu/ksu.c b/drivers/kernelsu/ksu.c
+index 3639edc21503..c22dc88b2096 100644
+--- a/drivers/kernelsu/ksu.c
++++ b/drivers/kernelsu/ksu.c
+@@ -57,12 +57,12 @@ int __init kernelsu_init(void)
+ 
+        ksu_throne_tracker_init();
+ 
+-#ifdef CONFIG_KPROBES
++//#ifdef CONFIG_KPROBES
+        ksu_sucompat_init();
+        ksu_ksud_init();
+-#else
+-       pr_alert("KPROBES is disabled, KernelSU may not work, please check https://kernelsu.org/guide/how-to-integrate-for-non-gki.html");
+-#endif
++//#else
++//     pr_alert("KPROBES is disabled, KernelSU may not work, please check https://kernelsu.org/guide/how-to-integrate-for-non-gki.html");
++//#endif
+ 
+ #ifdef MODULE
+ #ifndef CONFIG_KSU_DEBUG
+diff --git a/drivers/kernelsu/ksu.h b/drivers/kernelsu/ksu.h
+index 35d1b14dbb7c..c8f8705bad85 100644
+--- a/drivers/kernelsu/ksu.h
++++ b/drivers/kernelsu/ksu.h
+@@ -4,7 +4,7 @@
+ #include <linux/types.h>
+ #include <linux/workqueue.h>
+ 
+-#define KERNEL_SU_VERSION KSU_VERSION
++#define KERNEL_SU_VERSION 1639
+ #define KERNEL_SU_OPTION 0xDEADBEEF
+ 
+ #define CMD_GRANT_ROOT 0
