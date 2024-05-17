@@ -19,9 +19,9 @@ fi
 # clone
 git clone ${repo} ${repodir}
 cd ${repodir}
-git rev-list --count HEAD | tee ksuversion.txt
+git rev-list --count HEAD | tee version.txt
 cd $DIR
-ksuversion=$(expr 10000 + $(cat ${repodir}/ksuversion.txt) + 200)
+version=$(expr 10000 + $(cat ${repodir}/version.txt) + 200)
 
 # make deleted dir
 mkdir "${path}"/drivers/kernelsu
@@ -54,10 +54,27 @@ elif [[ "${kksu}" == "n" ]]; then
 fi
 echo ""
 
+# add BACKPORT path umount frm 5.9
+echo -ne "Do you want to add path umount to from 5.9 [y/n]: "
+read -r umount
+if [[ "${umount}" == "y" ]]; then
+    echo "Applying" && echo ""
+    wget https://raw.githubusercontent.com/HinohArata/android_build_env/main/ksu-umount.patch
+    git apply ksu-umount.patch
+    rm -rf ksu-umount.patch
+    git add .
+    git commit -s --author="HinohArata <mmgcntk@gmail.com>" -m "BACKPORT: path umount to from 5.9"
+    echo "Patching Done"
+elif [[ "${umount}" == "n" ]]; then
+    echo "Skipping" && echo ""
+fi
+echo ""
+
 # update kernelsu version
 echo "Updating KSU version"
 echo ""
-sed -i "s/^#define KERNEL_SU_VERSION.*/#define KERNEL_SU_VERSION ($ksuversion)/g" drivers/kernelsu/ksu.h
+sed -i "s/^#define KERNEL_SU_VERSION.*/#define KERNEL_SU_VERSION ($version)/g" drivers/kernelsu/ksu.h
+sleep 3
 echo "Updated"
 git add drivers/kernelsu/*
 git commit -s -m "kernelsu: hardcode update kernelsu version"
